@@ -25,4 +25,25 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Bookings table for car dealership transactions.
+ * customerName, customerContact, and customerId are encrypted at the application level.
+ */
+export const bookings = mysqlTable('bookings', {
+  id: int('id').autoincrement().primaryKey(),
+  vehicleId: int('vehicleId').notNull(),
+  customerName: text('customerName').notNull(),
+  customerContact: varchar('customerContact', { length: 255 }).notNull(),
+  customerId: varchar('customerId', { length: 255 }).notNull(),
+  transactionType: mysqlEnum('transactionType', ['sale', 'rental', 'service']).notNull(),
+  amount: int('amount').notNull(),
+  rentalStartDate: timestamp('rentalStartDate'),
+  rentalEndDate: timestamp('rentalEndDate'),
+  notes: text('notes'),
+  status: mysqlEnum('status', ['pending', 'confirmed', 'completed', 'cancelled']).default('pending').notNull(),
+  createdAt: timestamp('createdAt').defaultNow().notNull(),
+  updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+});
+
+export type Booking = typeof bookings.$inferSelect;
+export type InsertBooking = typeof bookings.$inferInsert;
